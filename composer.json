@@ -1,0 +1,25 @@
+{
+    "name": "titip-informatika/php-login-management",
+    "description": "Belajar Php Login management",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Titip Informatika",
+            "email": "titip.informatika@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit":"9.5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "TitipInformatika\\Data\\":"app"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TitipInformatika\\Data\\":"tests"
+        }
+    }
+}

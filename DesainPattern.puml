@@ -1,0 +1,30 @@
+@startuml
+node Controller as controller
+node Service as service
+node View as view
+node Model as model
+node Domain as domain
+node Repository as repository
+database Mysql as database
+actor as users
+
+users --> controller : 1
+controller --> service :2
+controller --> view :3
+model --> service:4
+service --> repository:5
+domain --> repository : 6
+repository --> database : 7
+
+database ---> repository: 8
+repository --> service :9
+service -> controller :10
+
+
+
+
+
+
+
+
+@enduml
