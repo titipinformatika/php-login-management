@@ -7,6 +7,7 @@ use TitipInformatika\Data\Exception\ValidationException;
 use TitipInformatika\Data\Model\UserLoginRequest;
 use TitipInformatika\Data\Model\UserProfileUpdateRequest;
 use TitipInformatika\Data\Model\UserRegisterRequest;
+use TitipInformatika\Data\Model\UserUpdatePasswordRequest;
 use TitipInformatika\Data\Repository\UserRepository;
 
 class UserServiceTest extends TestCase{
@@ -172,5 +173,52 @@ class UserServiceTest extends TestCase{
         $userProfileUpdateRequest->setName("Asep Riki Ganteng");
         $userProfileUpdateRequest->setUsername("asepriki11234");
         $this->userService->userUpdateProfile($userProfileUpdateRequest);
+    }
+
+    public function testUpdatePasswordSuccess(){
+        $registerRequest = new UserRegisterRequest();
+        $registerRequest->setId("riki");
+        $registerRequest->setName("Asep Riki");
+        $registerRequest->setUsername("asepriki");
+        $registerRequest->setPassword("rahasiah");
+        $user = $this->userService->register($registerRequest);
+        $request = new UserUpdatePasswordRequest();
+        $request->id=$user->user->getId();
+        $request->oldPassword ="rahasiah" ;
+        $request->password="rahasiahlagi";
+        $response = $this->userService->userUpdatePassword($request);
+
+        $this->assertTrue(password_verify($request->password,$response->user->getPassword()));
+
+    }
+
+    public function testUpdatePasswordException(){
+        $registerRequest = new UserRegisterRequest();
+        $registerRequest->setId("riki");
+        $registerRequest->setName("Asep Riki");
+        $registerRequest->setUsername("asepriki");
+        $registerRequest->setPassword("rahasiah");
+        $user = $this->userService->register($registerRequest);
+        $this->expectException(ValidationException::class);
+        $request = new UserUpdatePasswordRequest();
+        $request->id=$user->user->getId();
+        $request->oldPassword ="" ;
+        $request->password="";
+       $this->userService->userUpdatePassword($request);
+    }
+
+    public function testUpdatePasswordUserNotFound(){
+        $registerRequest = new UserRegisterRequest();
+        $registerRequest->setId("riki");
+        $registerRequest->setName("Asep Riki");
+        $registerRequest->setUsername("asepriki");
+        $registerRequest->setPassword("rahasiah");
+        $user = $this->userService->register($registerRequest);
+        $this->expectException(ValidationException::class);
+        $request = new UserUpdatePasswordRequest();
+        $request->id="salah";
+        $request->oldPassword ="Asep Riki" ;
+        $request->password="rahasiah";
+       $this->userService->userUpdatePassword($request);
     }
 }

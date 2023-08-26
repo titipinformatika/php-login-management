@@ -64,7 +64,7 @@ class UserService {
             // check match old password and new password
             if(!password_verify($request->oldPassword,$user->getPassword())){
                 throw new ValidationException("old password is wrong");
-            }
+            }   
 
 
             $user->setPassword(password_hash($request->password,PASSWORD_BCRYPT));
