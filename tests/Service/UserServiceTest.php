@@ -5,6 +5,7 @@ use TitipInformatika\Data\Config\Database;
 use TitipInformatika\Data\Domain\User;
 use TitipInformatika\Data\Exception\ValidationException;
 use TitipInformatika\Data\Model\UserLoginRequest;
+use TitipInformatika\Data\Model\UserProfileUpdateRequest;
 use TitipInformatika\Data\Model\UserRegisterRequest;
 use TitipInformatika\Data\Repository\UserRepository;
 
@@ -119,7 +120,57 @@ class UserServiceTest extends TestCase{
             self::assertEquals($user->getPassword(),$response->user->getPassword());
             self::assertTrue(password_verify($request->getPassword(),$response->user->getPassword()));
 
+    }
 
+    public function testUpdateProfileSuccess(){
+
+        $user = new User();
+        $user->setId("riki");
+        $user->setName("Asep Riki");
+        $user->setUsername("asepriki");
+        $user->setPassword("rahasiah");
+        $this->userRepository->save($user);
+
+        $userProfileUpdateRequest = new UserProfileUpdateRequest();
+        $userProfileUpdateRequest->setId("riki");
+        $userProfileUpdateRequest->setName("Asep Riki Ganteng");
+        $userProfileUpdateRequest->setUsername("asepriki1993");
+        $response  =$this->userService->userUpdateProfile($userProfileUpdateRequest);
+        self::assertEquals($userProfileUpdateRequest->getName(),$response->user->getName());
+        self::assertEquals($userProfileUpdateRequest->getUsername(),$response->user->getUsername());
+
+
+
+    }
+
+    public function testUpdateProfileException(){
+        $user = new User();
+        $user->setId("riki");
+        $user->setName("Asep Riki");
+        $user->setUsername("asepriki");
+        $user->setPassword("rahasiah");
+        $this->userRepository->save($user);
+        self::expectException(ValidationException::class);
+        $userProfileUpdateRequest = new UserProfileUpdateRequest();
+        $userProfileUpdateRequest->setId("");
+        $userProfileUpdateRequest->setName("");
+        $userProfileUpdateRequest->setUsername("");
+        $response  =$this->userService->userUpdateProfile($userProfileUpdateRequest);
         
+    }
+
+    public function testUpdateProfileNotFound(){
+        $user = new User();
+        $user->setId("riki");
+        $user->setName("Asep Riki");
+        $user->setUsername("asepriki");
+        $user->setPassword("rahasiah");
+        $this->userRepository->save($user);
+        self::expectException(ValidationException::class);
+        $userProfileUpdateRequest = new UserProfileUpdateRequest();
+        $userProfileUpdateRequest->setId("salah");
+        $userProfileUpdateRequest->setName("Asep Riki Ganteng");
+        $userProfileUpdateRequest->setUsername("asepriki11234");
+        $this->userService->userUpdateProfile($userProfileUpdateRequest);
     }
 }
